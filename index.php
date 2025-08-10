@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voto</title>
     <meta name="description" content="Sistema de votación">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
     <a href="votar.php">Votar</a>
-    <script src="script.js" defer></script>
+    <script src="js/script.js" defer></script>
 </body>
 </html>
