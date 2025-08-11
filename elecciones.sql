@@ -22,18 +22,6 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `intentos`
---
-
-CREATE TABLE `intentos` (
-  `id` int NOT NULL,
-  `ip` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `candidato` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `intento_fecha` timestamp NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -61,23 +49,9 @@ CREATE TABLE `votos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 --
--- Volcado de datos para la tabla `votos`
---
-
-INSERT INTO `votos` (`id`, `candidato`, `ip`, `fecha`) VALUES
-(1, 'valdes', '190.229.217.89', '2025-08-10 00:14:06'),
-(2, 'colombi', '190.229.217.89', '2025-08-10 00:14:34'),
-(3, 'colombi', '190.229.217.89', '2025-08-10 00:15:45');
-
 --
 -- Índices para tablas volcadas
 --
-
---
--- Indices de la tabla `intentos`
---
-ALTER TABLE `intentos`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `tokens_voto`
@@ -97,11 +71,6 @@ ALTER TABLE `votos`
 --
 
 --
--- AUTO_INCREMENT de la tabla `intentos`
---
-ALTER TABLE `intentos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
 --
 -- AUTO_INCREMENT de la tabla `tokens_voto`
 --
@@ -112,7 +81,7 @@ ALTER TABLE `tokens_voto`
 -- AUTO_INCREMENT de la tabla `votos`
 --
 ALTER TABLE `votos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,6 +1,7 @@
 <?php
 include('conexion.php');
-$candidatos = ['massa', 'grabois', 'tincho'];
+include('config.php');
+$candidatos = array_keys($candidates);
 $totales = array_fill_keys($candidatos, 0);
 $sentencia = $conexion->prepare("SELECT candidato, COUNT(*) AS totales FROM votos GROUP BY candidato");
 $sentencia->execute();
