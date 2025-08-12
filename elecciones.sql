@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 10-08-2025 a las 03:24:28
+-- Tiempo de generación: 12-08-2025 a las 22:46:50
 -- Versión del servidor: 8.4.5-0ubuntu0.2
 -- Versión de PHP: 8.4.5
 
@@ -24,28 +24,24 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `intentos`
+-- Estructura de tabla para la tabla `token`
 --
 
-CREATE TABLE `intentos` (
+CREATE TABLE `token` (
   `id` int NOT NULL,
-  `ip` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `candidato` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `intento_fecha` timestamp NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tokens_voto`
---
-
-CREATE TABLE `tokens_voto` (
-  `id` int NOT NULL,
-  `token` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `estado` enum('pendiente','usado') COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `codigo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `ip` varchar(45) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `ubicacion` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `estado` int NOT NULL,
   `creado` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+--
+-- Volcado de datos para la tabla `token`
+--
+
+INSERT INTO `token` (`id`, `codigo`, `ip`, `ubicacion`, `estado`, `creado`) VALUES
+(278, '38d390050a8b827f6eff5df5c4df27eb335e14c0bf76cd57fee260ccca34e1f4', '190.229.217.89', 'Argentina, Corrientes', 1, '2025-08-12 19:45:17');
 
 -- --------------------------------------------------------
 
@@ -65,26 +61,18 @@ CREATE TABLE `votos` (
 --
 
 INSERT INTO `votos` (`id`, `candidato`, `ip`, `fecha`) VALUES
-(1, 'valdes', '190.229.217.89', '2025-08-10 00:14:06'),
-(2, 'colombi', '190.229.217.89', '2025-08-10 00:14:34'),
-(3, 'colombi', '190.229.217.89', '2025-08-10 00:15:45');
+(94, 'massa', '190.229.217.89', '2025-08-12 19:45:19');
 
 --
 -- Índices para tablas volcadas
 --
 
 --
--- Indices de la tabla `intentos`
+-- Indices de la tabla `token`
 --
-ALTER TABLE `intentos`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `tokens_voto`
---
-ALTER TABLE `tokens_voto`
+ALTER TABLE `token`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `token` (`token`);
+  ADD UNIQUE KEY `token` (`codigo`);
 
 --
 -- Indices de la tabla `votos`
@@ -97,22 +85,16 @@ ALTER TABLE `votos`
 --
 
 --
--- AUTO_INCREMENT de la tabla `intentos`
+-- AUTO_INCREMENT de la tabla `token`
 --
-ALTER TABLE `intentos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
---
--- AUTO_INCREMENT de la tabla `tokens_voto`
---
-ALTER TABLE `tokens_voto`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `token`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=279;
 
 --
 -- AUTO_INCREMENT de la tabla `votos`
 --
 ALTER TABLE `votos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

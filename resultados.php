@@ -1,3 +1,4 @@
+<div clas="container">
 <?php
 include('conexion.php');
 $candidatos = ['massa', 'grabois', 'tincho'];
@@ -17,3 +18,5 @@ foreach ($totales as $candidato => $total) {
     $palabra = ($total === 1) ? 'voto' : 'votos';
     echo ucfirst($candidato) . ": $total $palabra<br>";
 }
+?>
+</div>
