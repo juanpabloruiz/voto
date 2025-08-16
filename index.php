@@ -4,7 +4,7 @@ include('conexion.php');
 // Asignamos la IP a una variable
 $ip = file_get_contents('https://api.ipify.org');
 
-$consulta = mysqli_query($conexion, "SELECT * FROM votos2 WHERE ip = '$ip'");
+$consulta = mysqli_query($conexion, "SELECT * FROM votos WHERE ip = '$ip'");
 $campo = mysqli_fetch_assoc($consulta);
 
 ?>

@@ -20,7 +20,7 @@ if (isset($_POST['votar'])) {
 
     $_SESSION['token'] = $token;
 
-    $sentencia = $conexion->prepare("INSERT INTO votos2 (candidato, ip, ubicacion, token, estado, ingreso) VALUES (?, ?, ?, ?, 1, NOW())");
+    $sentencia = $conexion->prepare("INSERT INTO votos (candidato, ip, ubicacion, token, estado, ingreso) VALUES (?, ?, ?, ?, 1, NOW())");
     $sentencia->bind_param("ssss", $candidato, $ip, $ubicacion, $token);
     $sentencia->execute();
 
