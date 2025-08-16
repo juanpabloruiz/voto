@@ -1,180 +1,66 @@
 <?php
-session_start();
 include('conexion.php');
 
+// Asignamos la IP a una variable
 $ip = file_get_contents('https://api.ipify.org');
 
-// Ubicación (puede tardar un poquito si usás API externa)
-$ubicacion = '';
-$geo = @file_get_contents("http://ip-api.com/json/{$ip}?fields=country,city");
-if ($geo) {
-    $datos = json_decode($geo, true);
-    if (isset($datos['country'])) {
-        $ubicacion = $datos['country'] . ', ' . $datos['city'];
-    }
-}
+$consulta = mysqli_query($conexion, "SELECT * FROM votos2 WHERE ip = '$ip'");
+$campo = mysqli_fetch_assoc($consulta);
 
-// Gestionar token en sesión y base
-if (isset($_SESSION['token'])) {
-    $token = $_SESSION['token'];
-    $sentencia = $conexion->prepare("SELECT 1 FROM token WHERE codigo = ? LIMIT 1");
-    $sentencia->bind_param('s', $token);
-    $sentencia->execute();
-    $sentencia->store_result();
-    if ($sentencia->num_rows === 0) {
-        $token = bin2hex(random_bytes(32));
-        $_SESSION['token'] = $token;
-        $sentencia_insertar = $conexion->prepare("INSERT INTO token (codigo, ip, ubicacion, estado, creado) VALUES (?, ?, ?, 0, NOW())");
-        $sentencia_insertar->bind_param('sss', $token, $ip, $ubicacion);
-        $sentencia_insertar->execute();
-        $sentencia_insertar->close();
-    }
-    $sentencia->close();
-} else {
-    $token = bin2hex(random_bytes(32));
-    $_SESSION['token'] = $token;
-    $sentencia_insertar = $conexion->prepare("INSERT INTO token (codigo, ip, ubicacion, estado, creado) VALUES (?, ?, ?, 0, NOW())");
-    $sentencia_insertar->bind_param('sss', $token, $ip, $ubicacion);
-    $sentencia_insertar->execute();
-    $sentencia_insertar->close();
-}
-
-// Calcular si ya votó
-$yaVoto = false;
-
-$sentencia_estado = $conexion->prepare("SELECT estado FROM token WHERE codigo = ?");
-$sentencia_estado->bind_param('s', $token);
-$sentencia_estado->execute();
-$resultado_estado = $sentencia_estado->get_result();
-$campo = $resultado_estado->fetch_assoc();
-$sentencia_estado->close();
-
-if ($campo && (int)$campo['estado'] === 1) {
-    $yaVoto = true;
-} else {
-    $sentencia_ip = $conexion->prepare("SELECT id FROM votos WHERE ip = ? LIMIT 1");
-    $sentencia_ip->bind_param('s', $ip);
-    $sentencia_ip->execute();
-    $sentencia_ip->store_result();
-    if ($sentencia_ip->num_rows > 0) {
-        $yaVoto = true;
-    }
-    $sentencia_ip->close();
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Voto.ar</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous" />
-    <style>
-        .radio-img {
-            display: none;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voto</title>
+    <meta name="description" content="Sitio web para votar al mejor candidato">
 
-        .radio-img+label {
-            cursor: pointer;
-            display: inline-block;
-        }
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X9SPDSLJ1P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-        .radio-img+label img {
-            max-width: 100%;
-            border-radius: 8px;
+        function gtag() {
+            dataLayer.push(arguments);
         }
+        gtag('js', new Date());
 
-        .radio-img:checked+label {
-            border: 6px solid #0d6efd;
-            border-radius: 2px solid transparent;
-        }
+        gtag('config', 'G-X9SPDSLJ1P');
+    </script>
 
-        .card:checked {
-            border: 6px solid #0d6efd;
-            border-radius: 8px;
-        }
-    </style>
 </head>
 
 <body>
-    <div class="container mt-4">
-        <?php if ($yaVoto): ?>
-            <div id="resultados">
-                <?php include('resultados.php'); ?>
-            </div>
-        <?php else: ?>
-            <form id="formVoto" method="POST">
-                <input type="hidden" name="ip" value="<?= htmlspecialchars($ip) ?>" />
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <input type="radio" name="candidato" id="op1" class="radio-img" value="massa" />
-                            <label for="op1">
-                                <img src="img/massa.jpg" class="card-img-top" alt="massa" />
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <input type="radio" name="candidato" id="op2" class="radio-img" value="grabois" />
-                            <label for="op2">
-                                <img src="img/grabois.jpg" class="card-img-top" alt="grabois" />
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <input type="radio" name="candidato" id="op3" class="radio-img" value="alberto" />
-                            <label for="op3">
-                                <img src="img/alberto.jpg" class="card-img-top" alt="alberto" />
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <input type="submit" value="Votar" class="btn btn-primary mt-3" />
-            </form>
 
-            <div id="mensaje" class="mt-3"></div>
-            <div id="resultados" class="mt-3"></div>
-        <?php endif; ?>
-    </div>
+    <h1>Voto</h1>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-        crossorigin="anonymous"></script>
-    <script>
-        $('#formVoto').on('submit', function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: 'procesar.php',
-                method: 'POST',
-                data: $(this).serialize(),
-                dataType: 'json',
-                success: function (data) {
-                    console.log('Respuesta:', data);
-                    if (data.status === 'success') {
-                        $('#mensaje').css('color', 'green').text(data.message);
-                        $('#formVoto').hide();
-                        cargarResultados();
-                    } else {
-                        $('#mensaje').css('color', 'red').text(data.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('AJAX error:', status, error);
-                    $('#mensaje').css('color', 'red').text('Error en la conexión');
-                }
-            });
-        });
+    <?php
+    if ($campo && $campo['ip'] == $ip || $campo['estado'] == 1) {
+        echo 'Su voto ya fue registrado, muchas gracias';
+    } else {
+    ?>
 
-        function cargarResultados() {
-            $('#resultados').load('resultados.php');
-        }
-    </script>
+        <h2>Votemos</h2>
+
+        <form method="POST" action="votar.php">
+            <label>
+                <input type="radio" name="candidato" value="Valdés"> Valdés
+            </label>
+            <label>
+                <input type="radio" name="candidato" value="Colombi"> Colombi
+            </label>
+            <label>
+                <input type="radio" name="candidato" value="Azcúa"> Azcúa
+            </label>
+            <input type="submit" name="votar" value="Votar">
+        </form>
+
+    <?php
+    }
+    ?>
+
 </body>
 
 </html>
