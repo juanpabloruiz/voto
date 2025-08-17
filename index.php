@@ -46,13 +46,19 @@ $campo = mysqli_fetch_assoc($consulta);
 
         <form method="POST" action="votar.php">
             <label>
-                <input type="radio" name="candidato" value="Valdés"> Valdés
+                <input type="radio" name="candidato" value="valdes"> Juan Pablo Valdés
             </label>
             <label>
-                <input type="radio" name="candidato" value="Colombi"> Colombi
+                <input type="radio" name="candidato" value="colombi"> Ricardo Colombi
             </label>
             <label>
-                <input type="radio" name="candidato" value="Azcúa"> Azcúa
+                <input type="radio" name="candidato" value="romero"> Ezequiel Romero
+            </label>
+            <label>
+                <input type="radio" name="candidato" value="ascua"> Martín Ascúa
+            </label>
+            <label>
+                <input type="radio" name="candidato" value="almiroon"> Lisandro Almirón
             </label>
             <input type="submit" name="votar" value="Votar">
         </form>
