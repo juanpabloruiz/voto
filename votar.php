@@ -1,11 +1,12 @@
 <?php
 include('conexion.php');
 
-if (isset($_POST['votar'])) {
-
+if (isset($_POST['candidato'])) {
     $candidato = $_POST['candidato'];
 
     $ip = file_get_contents('https://api.ipify.org');
+
+    $token = $_SESSION['token'];
 
     $ubicacion = '';
     $geo = @file_get_contents("http://ip-api.com/json/{$ip}?fields=country,city");
@@ -16,13 +17,10 @@ if (isset($_POST['votar'])) {
         }
     }
 
-    $token = bin2hex(random_bytes(32));
-
-    $_SESSION['token'] = $token;
-
     $sentencia = $conexion->prepare("INSERT INTO votos (candidato, ip, ubicacion, token, estado, ingreso) VALUES (?, ?, ?, ?, 1, NOW())");
     $sentencia->bind_param("ssss", $candidato, $ip, $ubicacion, $token);
     $sentencia->execute();
+    $sentencia->close();
 
     header("Location: ./");
 
