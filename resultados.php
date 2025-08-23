@@ -7,7 +7,9 @@ $candidatos = [
     'Horacio Ricardo Colombi',
     'Carlos Ezequiel Romero',
     'Martín Ignacio Ascúa',
-    'Lisandro Almirón'
+    'Lisandro Almirón',
+    'Sonia Beatriz López',
+    'Adriana Leila Vega'
 ];
 
 // Imágenes
@@ -16,7 +18,9 @@ $imagenes = [
     'Horacio Ricardo Colombi' => 'img/colombi.jpg',
     'Carlos Ezequiel Romero' => 'img/romero.jpg',
     'Martín Ignacio Ascúa' => 'img/ascua.jpg',
-    'Lisandro Almirón' => 'img/almiron.jpg'
+    'Lisandro Almirón' => 'img/almiron.jpg',
+    'Sonia Beatriz López' => 'img/lopez.jpg',
+    'Adriana Leila Vega' => 'img/vega.jpg'
 ];
 
 // Inicializamos conteo
@@ -39,20 +43,47 @@ while ($sentencia->fetch()) {
 }
 $sentencia->close();
 
+// Ordenar resultados de mayor a menor por votos
+arsort($conteo);
+
 // Total de votos
 $totalVotos = array_sum($conteo);
 
-// Mostrar resultados como tarjetas verticales
-echo "<div class='resultados' style='display:flex;flex-direction:column;gap:0.7rem;'>";
+// Mostrar resultados como tarjetas en 2 columnas
+echo "<div class='resultados' style='
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0.7rem;
+'>";
 foreach ($conteo as $nombre => $votos) {
     $porcentaje = $totalVotos > 0 ? ($votos / $totalVotos) * 100 : 0;
     $textoVoto = $votos === 1 ? "voto" : "votos";
     $img = $imagenes[$nombre] ?? 'img/default.jpg';
     
-    echo "<div class='tarjeta' style='display:flex;align-items:center;border:1px solid #ccc;border-radius:8px;padding:0.5rem;box-shadow: inset 0 0 30px rgba(0,0,0,0.5);'>";
+    echo "<div class='tarjeta' style='
+        display:flex;
+        align-items:center;
+        border:1px solid #ccc;
+        border-radius:8px;
+        padding:0.5rem;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    '>";
     echo "
-    <div style='width:80px;height:75px;border-radius:6px;overflow:hidden;box-shadow: inset 0 0 50px rgba(0,0,0,0.5);margin-right:0.75rem;'>
-    <img src='$img' alt='$nombre' style='width:80px;height:75px;border-radius:6px;box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);margin-right:0.75rem;object-fit:cover;object-position: top;'>
+    <div style='
+        width:80px;
+        height:75px;
+        border-radius:6px;
+        overflow:hidden;
+        box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+        margin-right:0.75rem;
+    '>
+        <img src='$img' alt='$nombre' style='
+            width:80px;
+            height:75px;
+            border-radius:6px;
+            object-fit:cover;
+            object-position: top;
+        '>
     </div>";
     echo "<div style='display:flex;flex-direction:column;'>";
     echo "<strong>$nombre</strong>";
@@ -62,4 +93,5 @@ foreach ($conteo as $nombre => $votos) {
     echo "</div>";
 }
 echo "</div>";
+
 ?>

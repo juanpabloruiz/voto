@@ -19,11 +19,55 @@ $campo = mysqli_fetch_assoc($consulta);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voto</title>
-    <meta name="description" content="Sitio web para votar al mejor candidato">
-
     <!-- Estilo -->
     <link rel="preload" href="css/style.css" as="style">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Meta tags Google -->
+    <meta name="description" content="Sitio web creado como prototipo para la votación de candidatos o témas de interés general.">
+    <meta name="keywords" content="Corrientes, Argentina, Sociedad, Política, Votación, Candidatos, Prototipo">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="es_ES">
+    <meta name="author" content="Juan Pablo Ruiz">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="https://voto.ar/iconos/ms-icon-144x144.png">
+
+    <!--- Íconos -->
+    <link rel="apple-touch-icon" sizes="57x57" href="https://voto.ar/iconos/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="https://voto.ar/iconos/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://voto.ar/iconos/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="https://voto.ar/iconos/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://voto.ar/iconos/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="https://voto.ar/iconos/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://voto.ar/iconos/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://voto.ar/iconos/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://voto.ar/iconos/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://voto.ar/iconos/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://voto.ar/iconos/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="https://voto.ar/iconos/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://voto.ar/iconos/favicon-16x16.png">
+    <link rel="manifest" href="https://voto.ar/iconos/manifest.json">
+    <link rel="canonical" href="https://voto.ar">
+
+    <!-- Open Graph para WhatsApp, Facebook, Telegram -->
+    <meta property="og:title" content="Estudio Quatro">
+    <meta property="og:locale" content="es_LA">
+    <meta property="og:description" content="Servicios profesionales en la Provincia de Corrientes. Asesoramiento jurídico, notarial y contable. Especialistas en el Régimen Jurídico de Automotores y sus derivados.">
+    <meta property="og:url" content="https://voto.ar">
+    <meta property="og:type" content="business.business">
+    <meta property="og:image" content="https://voto.ar/img/iso1200.png?v=1">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Logo de Estudio Quatro">
+
+
+    <!-- Twitter Card (opcional, también funciona en WhatsApp) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Estudio Quatro">
+    <meta name="twitter:description" content="Estudio Quatro: especialistas en X. Visitanos y conoce nuestros servicios.">
+    <meta name="twitter:image" content="https://voto.ar/img/logo.png">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-X9SPDSLJ1P"></script>
@@ -118,16 +162,24 @@ $campo = mysqli_fetch_assoc($consulta);
         .btn-votar:hover {
             background-color: #0b5ed7;
         }
+        header {
+            background-color: #0066fe;
+        }
     </style>
 
 </head>
 
 <body>
+
     <header>
-        <a href="./">
-            <h1>VotoDigital</h1>
+        <a href="../">
+            <picture>
+                <source srcset="img/logo.webp" type="image/webp" />
+                <img src="img/logo.png" fetchpriority=high width="300" height="119" alt="Logotipo" />
+            </picture>
         </a>
     </header>
+
     <div class="contenedor">
         <?php
         if ($campo && $campo['ip'] == $ip || $campo['token'] == $token && $campo['estado'] == 1) {
@@ -158,6 +210,14 @@ $campo = mysqli_fetch_assoc($consulta);
                     <label>
                         <input type="radio" name="candidato" value="Lisandro Almirón" hidden>
                         <img src="img/almiron.jpg" class="opcion">
+                    </label>
+                    <label>
+                        <input type="radio" name="candidato" value="Sonia Beatriz López" hidden>
+                        <img src="img/lopez.jpg" class="opcion">
+                    </label>
+                    <label>
+                        <input type="radio" name="candidato" value="Adriana Leila Vega" hidden>
+                        <img src="img/vega.jpg" class="opcion">
                     </label>
                 </div>
                 <br>
