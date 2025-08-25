@@ -52,22 +52,22 @@ $campo = mysqli_fetch_assoc($consulta);
     <link rel="canonical" href="https://voto.ar">
 
     <!-- Open Graph para WhatsApp, Facebook, Telegram -->
-    <meta property="og:title" content="Estudio Quatro">
+    <meta property="og:title" content="Voto">
     <meta property="og:locale" content="es_LA">
-    <meta property="og:description" content="Servicios profesionales en la Provincia de Corrientes. Asesoramiento jurídico, notarial y contable. Especialistas en el Régimen Jurídico de Automotores y sus derivados.">
+    <meta property="og:description" content="Sistema prototipo de votación online.">
     <meta property="og:url" content="https://voto.ar">
     <meta property="og:type" content="business.business">
-    <meta property="og:image" content="https://voto.ar/img/iso1200.png?v=1">
+    <meta property="og:image" content="https://voto.ar/img/logo1200x630.png.png?v=1">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Logo de Estudio Quatro">
+    <meta property="og:image:alt" content="Logo de Voto">
 
 
     <!-- Twitter Card (opcional, también funciona en WhatsApp) -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Estudio Quatro">
-    <meta name="twitter:description" content="Estudio Quatro: especialistas en X. Visitanos y conoce nuestros servicios.">
-    <meta name="twitter:image" content="https://voto.ar/img/logo.png">
+    <meta name="twitter:title" content="Voto">
+    <meta name="twitter:description" content="Sistema prototipo de votación online.">
+    <meta name="twitter:image" content="https://voto.ar/img/logo1200x630.png.png?v=1">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-X9SPDSLJ1P"></script>
