@@ -57,7 +57,7 @@ $campo = mysqli_fetch_assoc($consulta);
     <meta property="og:description" content="Sistema prototipo de votación online.">
     <meta property="og:url" content="https://voto.ar">
     <meta property="og:type" content="business.business">
-    <meta property="og:image" content="https://voto.ar/img/logo1200x630.png.png?v=1">
+    <meta property="og:image" content="https://voto.ar/img/logo1200x630.png?v=1">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Logo de Voto">
