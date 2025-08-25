@@ -11,7 +11,45 @@ $token = $_SESSION['token'];
 $consulta = mysqli_query($conexion, "SELECT * FROM votos WHERE (ip = '$ip' OR token = '$token') AND estado = 1 LIMIT 1");
 $campo = mysqli_fetch_assoc($consulta);
 
+// Lista de candidatos con imágenes
+$candidatos = [
+    "Pablo Valdés" => "img/valdes.jpg",
+    "Ricardo Colombi" => "img/colombi.jpg",
+    "Ezequiel Romero" => "img/romero.jpg",
+    "Martín Ascúa" => "img/ascua.jpg",
+    "Lisandro Almirón" => "img/almiron.jpg",
+    "Sonia López" => "img/lopez.jpg",
+    "Adriana Vega" => "img/vega.jpg"
+];
+
+// Total de votos válidos
+$queryTotal = mysqli_query($conexion, "SELECT COUNT(*) AS total FROM votos WHERE estado = 1");
+$rowTotal = mysqli_fetch_assoc($queryTotal);
+$totalVotos = $rowTotal['total'];
+
+// Inicializar array de resultados con 0
+$resultados = [];
+foreach (array_keys($candidatos) as $candidato) {
+    $resultados[$candidato] = 0;
+}
+
+// Traer votos por candidato desde DB
+$queryResultados = mysqli_query($conexion, "
+    SELECT candidato, COUNT(*) AS cantidad 
+    FROM votos 
+    WHERE estado = 1 
+    GROUP BY candidato
+");
+
+while ($row = mysqli_fetch_assoc($queryResultados)) {
+    $nombre = $row['candidato'];
+    $cantidad = $row['cantidad'];
+    if (isset($resultados[$nombre])) {
+        $resultados[$nombre] = $cantidad;
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -19,286 +57,248 @@ $campo = mysqli_fetch_assoc($consulta);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voto</title>
-    <!-- Estilo -->
-    <link rel="preload" href="css/style.css" as="style">
-    <link rel="stylesheet" href="css/style.css">
-
-    <!-- Meta tags Google -->
-    <meta name="description" content="Sitio web creado como prototipo para la votación de candidatos o témas de interés general.">
-    <meta name="keywords" content="Corrientes, Argentina, Sociedad, Política, Votación, Candidatos, Prototipo">
-    <meta name="robots" content="index, follow">
-    <meta name="language" content="es_ES">
-    <meta name="author" content="Juan Pablo Ruiz">
-    <meta name="theme-color" content="#ffffff">
-
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="https://voto.ar/iconos/ms-icon-144x144.png">
-
-    <!--- Íconos -->
-    <link rel="apple-touch-icon" sizes="57x57" href="https://voto.ar/iconos/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="https://voto.ar/iconos/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="https://voto.ar/iconos/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="https://voto.ar/iconos/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="https://voto.ar/iconos/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="https://voto.ar/iconos/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="https://voto.ar/iconos/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://voto.ar/iconos/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://voto.ar/iconos/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="https://voto.ar/iconos/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://voto.ar/iconos/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="https://voto.ar/iconos/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://voto.ar/iconos/favicon-16x16.png">
-    <link rel="manifest" href="https://voto.ar/iconos/manifest.json">
-    <link rel="canonical" href="https://voto.ar">
-
-    <!-- Open Graph para WhatsApp, Facebook, Telegram -->
-    <meta property="og:title" content="Voto">
-    <meta property="og:locale" content="es_LA">
-    <meta property="og:description" content="Sistema prototipo de votación online.">
-    <meta property="og:url" content="https://voto.ar">
-    <meta property="og:type" content="business.business">
-    <meta property="og:image" content="https://voto.ar/img/logo1200x630.png?v=1">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Logo de Voto">
-
-
-    <!-- Twitter Card (opcional, también funciona en WhatsApp) -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Voto">
-    <meta name="twitter:description" content="Sistema prototipo de votación online.">
-    <meta name="twitter:image" content="https://voto.ar/img/logo1200x630.png.png?v=1">
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X9SPDSLJ1P"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'G-X9SPDSLJ1P');
-    </script>
-
     <style>
-        .opcion {
-            filter: grayscale(100%);
-            cursor: pointer;
-            border-radius: 12px;
-            transition: filter 0.3s ease;
-            width: 120px;
-            height: auto;
-            margin: 5px;
-        }
-
-        .opcion.selected {
-            filter: grayscale(0%);
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: white;
-            font-size: 1.5em;
-            z-index: 9999;
-            display: none;
-            /* inicia oculto */
-        }
-
-        .loader {
-            width: 120px;
-            height: 17px;
-            border-radius: 5px;
-            color: #dee7ffff;
-            border: 1px solid;
-            position: relative;
-        }
-
-        .loader::before {
-            content: "";
-            position: absolute;
-            margin: 1px;
-            inset: 0 100% 0 0;
-            background: currentColor;
-            animation: l6 3s;
-        }
-
-        @keyframes l6 {
-            100% {
-                inset: 0
-            }
-        }
-
-        .btn-votar {
-            background-color: #0d6efd;
-            /* color primario de Bootstrap */
-            color: #fff;
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            font-weight: 500;
-            border: none;
-            border-radius: 0.375rem;
-            /* border-radius de Bootstrap 5 */
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            -webkit-appearance: none;
-            /* Safari */
-            -moz-appearance: none;
-            /* Firefox */
-            appearance: none;
-            /* general */
-        }
-
-        .btn-votar:hover {
-            background-color: #0b5ed7;
+        body {
+            background: #f8f9fa;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         header {
             background-color: #0066fe;
+            padding: 0.5rem 1rem;
+        }
+
+        header img {
+            height: 55px;
+            display: block;
+        }
+
+        .contenedor {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .titulo {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* Grilla */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .candidatos,
+        .resultados {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Lista candidatos */
+        .candidato {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.75rem;
+            margin-bottom: 0.6rem;
+            transition: background 0.2s;
+        }
+
+        .candidato:hover {
+            background: #eef3ff;
+        }
+
+        .candidato-info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .candidato img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .candidato .nombre {
+            font-weight: 600;
+        }
+
+        .btn-votar {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-votar:hover {
+            background: #0056b3;
+        }
+
+        /* Resultados */
+        .resultado {
+            margin-bottom: 0.8rem;
+        }
+
+        .barra-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .progress {
+            background: #e9ecef;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #007bff;
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+
+        .total-votos {
+            text-align: center;
+            margin-top: 0.8rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            flex-direction: column;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .loader {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
-
 </head>
 
 <body>
-
     <header>
-        <a href="../">
-            <picture>
-                <source srcset="img/logo.webp" type="image/webp" />
-                <img src="img/logo.png" fetchpriority=high width="150" height="55" alt="Logotipo" />
-            </picture>
-        </a>
+        <a href="../"><img src="img/logo.png" alt="Logo"></a>
     </header>
 
     <div class="contenedor">
+        <div class="grid">
 
-        <?php
-        if ($campo && isset($campo['ip'], $campo['token'], $campo['estado']) && ($campo['ip'] == $ip || ($campo['token'] == $token && $campo['estado'] == 1))) {
-            include('resultados.php');
-        } else {
-        ?>
-
-            <p>Elija su candidato a gobernador favorito:</p>
-
-            <form id="formVoto" method="POST" action="votar.php">
-                <div class="contenedor-opciones">
-                    <label>
-                        <input type="radio" name="candidato" value="Juan Pablo Valdés" hidden>
-                        <img src="img/valdes.jpg" fetchpriority=high class="opcion" alt="Juan Pablo Valdés">
-                    </label>
-                    <label>
-                        <input type="radio" name="candidato" value="Horacio Ricardo Colombi" hidden>
-                        <img src="img/colombi.jpg" fetchpriority=high class="opcion" alt="Horacio Ricardo Colombi">
-                    </label>
-                    <label>
-                        <input type="radio" name="candidato" value="Carlos Ezequiel Romero" hidden>
-                        <img src="img/romero.jpg" fetchpriority=high class="opcion" alt="Carlos Ezequiel Romero">
-                    </label>
-                    <label>
-                        <input type="radio" name="candidato" value="Martín Ignacio Ascúa" hidden>
-                        <img src="img/ascua.jpg" fetchpriority=high class="opcion" alt="Martín Ignacio Ascúa">
-                    </label>
-                    <label>
-                        <input type="radio" name="candidato" value="Lisandro Almirón" hidden>
-                        <img src="img/almiron.jpg" fetchpriority=high class="opcion" alt="Lisandro Almirón">
-                    </label>
-                    <label>
-                        <input type="radio" name="candidato" value="Sonia Beatriz López" hidden>
-                        <img src="img/lopez.jpg" fetchpriority=high class="opcion" alt="Sonia Beatriz López">
-                    </label>
-                    <label>
-                        <input type="radio" name="candidato" value="Adriana Leila Vega" hidden>
-                        <img src="img/vega.jpg" fetchpriority=high class="opcion" alt="Adriana Leila Vega">
-                    </label>
-                </div>
-                <br>
-                <button type="submit" class="btn-votar">Votar</button>
-            </form>
-
-
-            <!-- Overlay con GIF -->
-            <div id="overlay" class="overlay">
-                <div class="loader"></div>
-
-
-
-                <p>Ingresando voto...</p>
+            <!-- Columna izquierda: Candidatos -->
+            <div class="candidatos">
+                <?php
+                if ($campo && isset($campo['ip'], $campo['token'], $campo['estado']) && ($campo['ip'] == $ip || ($campo['token'] == $token && $campo['estado'] == 1))) {
+                    echo '<p>Gracias por tu voto!</p>';
+                } else {
+                    echo '<p class="titulo">Elegí tu candidato a gobernador y mirá el ranking en vivo:</p>';
+                    echo '<form id="formVoto" method="POST" action="votar.php">';
+                    foreach ($candidatos as $nombre => $img) {
+                        echo '<label class="candidato">';
+                        echo '<div class="candidato-info">';
+                        echo '<img src="' . $img . '" alt="' . $nombre . '">';
+                        echo '<span class="nombre">' . $nombre . '</span>';
+                        echo '</div>';
+                        echo '<input type="radio" name="candidato" value="' . $nombre . '" hidden>';
+                        echo '<button type="button" class="btn-votar" onclick="votarCandidato(this)">Votar</button>';
+                        echo '</label>';
+                    }
+                    echo '</form>';
+                }
+                ?>
             </div>
 
-        <?php
-        }
-        ?>
+            <!-- Columna derecha: Resultados -->
+            <div class="resultados">
+                <?php
+                foreach ($resultados as $nombre => $cantidad) {
+                    $porcentaje = $totalVotos > 0 ? round(($cantidad / $totalVotos) * 100) : 0;
+                    echo '<div class="resultado">';
+                    echo '<div class="barra-info"><span>' . $nombre . '</span><span>' . $porcentaje . '%</span></div>';
+                    echo '<div class="progress"><div class="progress-bar" data-porcentaje="' . $porcentaje . '"></div></div>';
+                    echo '</div>';
+                }
+                echo '<div class="total-votos">Total de votos: ' . $totalVotos . '</div>';
+                ?>
+            </div>
+        </div>
 
-    </div>
-    <script>
-        function customConfirm(message, callback) {
-            const modal = document.getElementById("customConfirm");
-            document.getElementById("customConfirmText").innerText = message;
-            modal.style.display = "flex";
-
-            const yesBtn = document.getElementById("customConfirmYes");
-            const noBtn = document.getElementById("customConfirmNo");
-
-            yesBtn.onclick = () => {
-                modal.style.display = "none";
-                callback(true);
-            }
-            noBtn.onclick = () => {
-                modal.style.display = "none";
-                callback(false);
-            }
-        }
-
-        const radios = document.querySelectorAll('input[name="candidato"]');
-        const imagenes = document.querySelectorAll('.opcion');
-        const form = document.getElementById('formVoto');
-        const overlay = document.getElementById('overlay');
-
-        // Cambio de gris a color al seleccionar
-        radios.forEach((radio, i) => {
-            radio.addEventListener('change', () => {
-                imagenes.forEach(img => img.classList.remove('selected'));
-                if (radio.checked) imagenes[i].classList.add('selected');
-            });
-        });
-
-        // Confirmación + overlay + envío retrasado
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // evitamos envío inmediato
-
-            if (!document.querySelector('input[name="candidato"]:checked')) {
-                alert("Debes elegir un candidato.");
-            } else {
-                customConfirm("¿Confirmas tu voto?", (ok) => {
-                    if (ok) {
-                        overlay.style.display = "flex";
-                        setTimeout(() => form.submit(), 1500);
-                    }
-                });
-            }
-        });
-    </script>
-
-    <!-- Modal único en tu HTML -->
-    <div id="customConfirm" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:9999;">
-        <div style="background:#fff;padding:1.5rem;border-radius:0.5rem;text-align:center;max-width:300px;width:90%;">
-            <p id="customConfirmText"></p>
-            <button id="customConfirmYes" style="background:#0d6efd;color:#fff;margin:0.5rem;padding:0.5rem 1rem;border:none;border-radius:0.25rem;cursor:pointer;">Sí</button>
-            <button id="customConfirmNo" style="background:#6c757d;color:#fff;margin:0.5rem;padding:0.5rem 1rem;border:none;border-radius:0.25rem;cursor:pointer;">No</button>
+        <!-- Overlay -->
+        <div id="overlay" class="overlay">
+            <div class="loader"></div>
+            <p>Votando...</p>
         </div>
     </div>
 
+    <script>
+        const form = document.getElementById('formVoto');
+        const overlay = document.getElementById('overlay');
+
+        function votarCandidato(btn) {
+            const label = btn.closest('.candidato');
+            const radio = label.querySelector('input[type=radio]');
+            radio.checked = true;
+            if (confirm("¿Confirmas tu voto?")) {
+                overlay.style.display = "flex";
+                setTimeout(() => form.submit(), 1000);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.progress-bar').forEach(bar => {
+                const porcentaje = bar.getAttribute('data-porcentaje');
+                setTimeout(() => bar.style.width = porcentaje + '%', 100);
+            });
+        });
+    </script>
 </body>
 
 </html>
