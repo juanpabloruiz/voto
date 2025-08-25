@@ -4,11 +4,7 @@ include('conexion.php');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-function cliente_ip() {
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
-    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-    return $_SERVER['REMOTE_ADDR'];
-}
+$ip = file_get_contents('https://api.ipify.org');
 
 function obtener_ubicacion($ip) {
     // API pública gratuita (hasta cierto límite por día)
@@ -25,7 +21,7 @@ function obtener_ubicacion($ip) {
     return ["pais" => null, "region" => null, "ciudad" => null];
 }
 
-$ip = cliente_ip();
+
 $ubicacion = obtener_ubicacion($ip);
 
 $pais = $ubicacion['pais'];

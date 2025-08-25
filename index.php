@@ -1,42 +1,16 @@
 <?php
 include('conexion.php');
 
-/** --------------------------
- *  Util: IP real del cliente
- *  -------------------------- */
+$ip = file_get_contents('https://api.ipify.org');
+
+// función que devuelve bien la IP real
 //function cliente_ip() {
-    //$candidatos = [
-        //'HTTP_CF_CONNECTING_IP', // Cloudflare
-       // 'HTTP_X_FORWARDED_FOR',  // Proxies
-       // 'HTTP_X_REAL_IP',
-        //'HTTP_CLIENT_IP',
-      //  'REMOTE_ADDR'
-    //];
-    //foreach ($candidatos as $h) {
-        //if (!empty($_SERVER[$h])) {
-            //$valor = $_SERVER[$h];
-            // Puede venir con "ip1, ip2, ip3"
-            //$ips = array_map('trim', explode(',', $valor));
-            //foreach ($ips as $ip) {
-              //  if (filter_var($ip, FILTER_VALIDATE_IP)) {
-            //        return $ip;
-          //      }
-        //    }
-      //  }
-    //}
-  //  return '0.0.0.0';
+    //if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
+   // if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+  //  return $_SERVER['REMOTE_ADDR'];
 //}
 
 //$ip = cliente_ip();
-
-// función que devuelve bien la IP real
-function cliente_ip() {
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
-    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-    return $_SERVER['REMOTE_ADDR'];
-}
-
-$ip = cliente_ip();
 
 
 
