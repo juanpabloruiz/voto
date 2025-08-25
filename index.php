@@ -20,8 +20,8 @@ $campo = mysqli_fetch_assoc($consulta);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voto</title>
     <!-- Estilo -->
-    <link rel="preload" href="css/style.css" as="style">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="preload" href="style.css" as="style">
+    <link rel="stylesheet" href="style.css">
 
     <!-- Meta tags Google -->
     <meta name="description" content="Sitio web creado como prototipo para la votación de candidatos o témas de interés general.">
