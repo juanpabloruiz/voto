@@ -175,7 +175,7 @@ $campo = mysqli_fetch_assoc($consulta);
         <a href="../">
             <picture>
                 <source srcset="img/logo.webp" type="image/webp" />
-                <img src="img/logo.png" fetchpriority=high width="300" height="119" alt="Logotipo" />
+                <img src="img/logo.png" fetchpriority=high width="150" height="55" alt="Logotipo" />
             </picture>
         </a>
     </header>
