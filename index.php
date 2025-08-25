@@ -1,6 +1,7 @@
 <?php
 include('conexion.php');
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 $ip = file_get_contents('https://api.ipify.org');
 
 // función que devuelve bien la IP real
