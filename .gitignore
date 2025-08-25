@@ -1,5 +1,6 @@
 # Ignorar archivo de configuración con datos sensibles
 conexion.php
+adminer.php
 
 # Ignorar carpetas comunes y archivos temporales
 /vendor/
