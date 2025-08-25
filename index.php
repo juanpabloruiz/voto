@@ -266,7 +266,7 @@ while ($row = mysqli_fetch_assoc($queryResultados)) {
                     echo '<div class="progress"><div class="progress-bar" data-porcentaje="' . $porcentaje . '"></div></div>';
                     echo '</div>';
                 }
-                echo '<div class="total-votos">Total de votos: ' . $totalVotos . '</div>';
+           
                 ?>
             </div>
         </div>
