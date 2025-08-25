@@ -56,7 +56,6 @@ foreach (array_keys($candidatos) as $candidato) {
 $queryResultados = mysqli_query($conexion, "
     SELECT candidato, COUNT(*) AS cantidad 
     FROM votos 
-    WHERE estado = 1 
     GROUP BY candidato
 ");
 
