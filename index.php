@@ -162,6 +162,7 @@ $campo = mysqli_fetch_assoc($consulta);
         .btn-votar:hover {
             background-color: #0b5ed7;
         }
+
         header {
             background-color: #0066fe;
         }
@@ -181,8 +182,9 @@ $campo = mysqli_fetch_assoc($consulta);
     </header>
 
     <div class="contenedor">
+
         <?php
-        if ($campo && $campo['ip'] == $ip || $campo['token'] == $token && $campo['estado'] == 1) {
+        if ($campo && isset($campo['ip'], $campo['token'], $campo['estado']) && ($campo['ip'] == $ip || ($campo['token'] == $token && $campo['estado'] == 1))) {
             include('resultados.php');
         } else {
         ?>
