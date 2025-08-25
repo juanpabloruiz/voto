@@ -20,6 +20,7 @@ if (!isset($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(32));
 }
 $token = $_SESSION['token'];
+echo $token;
 
 // Verificar si ya votó por IP o por navegador (token)
 $sql = "SELECT 1 FROM votos WHERE ip = ? OR token = ? LIMIT 1";
