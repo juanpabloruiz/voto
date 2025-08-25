@@ -192,31 +192,31 @@ $campo = mysqli_fetch_assoc($consulta);
             <form id="formVoto" method="POST" action="votar.php">
                 <div class="contenedor-opciones">
                     <label>
-                        <input type="radio" name="candidato" value="Juan Pablo Valdés" hidden>
+                        <input type="radio" name="candidato" value="Juan Pablo Valdés" alt="Juan Pablo Valdés" hidden>
                         <img src="img/valdes.jpg" class="opcion">
                     </label>
                     <label>
-                        <input type="radio" name="candidato" value="Horacio Ricardo Colombi" hidden>
+                        <input type="radio" name="candidato" value="Horacio Ricardo Colombi" alt="Juan Pablo Valdés" hidden>
                         <img src="img/colombi.jpg" class="opcion">
                     </label>
                     <label>
-                        <input type="radio" name="candidato" value="Carlos Ezequiel Romero" hidden>
+                        <input type="radio" name="candidato" value="Carlos Ezequiel Romero" alt="Juan Pablo Valdés" hidden>
                         <img src="img/romero.jpg" class="opcion">
                     </label>
                     <label>
-                        <input type="radio" name="candidato" value="Martín Ignacio Ascúa" hidden>
+                        <input type="radio" name="candidato" value="Martín Ignacio Ascúa" alt="Juan Pablo Valdés" hidden>
                         <img src="img/ascua.jpg" class="opcion">
                     </label>
                     <label>
-                        <input type="radio" name="candidato" value="Lisandro Almirón" hidden>
+                        <input type="radio" name="candidato" value="Lisandro Almirón" alt="Juan Pablo Valdés" hidden>
                         <img src="img/almiron.jpg" class="opcion">
                     </label>
                     <label>
-                        <input type="radio" name="candidato" value="Sonia Beatriz López" hidden>
+                        <input type="radio" name="candidato" value="Sonia Beatriz López" alt="Juan Pablo Valdés" hidden>
                         <img src="img/lopez.jpg" class="opcion">
                     </label>
                     <label>
-                        <input type="radio" name="candidato" value="Adriana Leila Vega" hidden>
+                        <input type="radio" name="candidato" value="Adriana Leila Vega" alt="Juan Pablo Valdés" hidden>
                         <img src="img/vega.jpg" class="opcion">
                     </label>
                 </div>
