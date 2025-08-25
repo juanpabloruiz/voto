@@ -3,14 +3,6 @@ include('conexion.php');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// función que devuelve bien la IP real
-//function cliente_ip() {
-//if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
-// if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-//  return $_SERVER['REMOTE_ADDR'];
-//}
-
-//$ip = cliente_ip();
 
 
 
@@ -267,16 +259,7 @@ ini_set('display_errors', 1);
                     }
                 }
 
-                // Verificar si ya votó por IP o por navegador (token)
-                $sql = "SELECT 1 FROM votos WHERE ip = ? OR token = ? LIMIT 1";
-                $stmt = $conexion->prepare($sql);
-                $stmt->bind_param("ss", $ip, $token);
-                $stmt->execute();
-                $yaVoto = $stmt->get_result()->num_rows > 0;
-
-                if ($yaVoto) {
-                    echo '<p>Gracias por tu voto!</p>';
-                } else {
+    
                 ?>
                     <div id="formContainer" style="display:none;">
                     <?php
@@ -293,7 +276,7 @@ ini_set('display_errors', 1);
                         echo '</label>';
                     }
                     echo '</form>';
-                }
+                
                     ?>
                     </div>
 
@@ -319,46 +302,51 @@ ini_set('display_errors', 1);
             </div>
         </div>
 
-        <script>
-            async function obtenerIPyMostrarForm() {
-                try {
-                    const res = await fetch('https://api.ipify.org?format=json');
-                    const data = await res.json();
-                    const ip = data.ip;
 
-                    // Guardar la IP en hidden del form
-                    document.getElementById('ipInput').value = ip;
-
-                    // Mostrar el formulario solo ahora
-                    document.getElementById('formContainer').style.display = 'block';
-                } catch (err) {
-                    console.error("No se pudo obtener la IP pública:", err);
-                }
-            }
-
-            obtenerIPyMostrarForm();
-        </script>
 
         <script>
-            const form = document.getElementById('formVoto');
-            const overlay = document.getElementById('overlay');
+const form = document.getElementById('formVoto');
+const overlay = document.getElementById('overlay');
 
-            function votarCandidato(btn) {
-                const label = btn.closest('.candidato');
-                const radio = label.querySelector('input[type=radio]');
-                radio.checked = true;
-                if (confirm("¿Confirmas tu voto?")) {
-                    overlay.style.display = "flex";
-                    setTimeout(() => form.submit(), 1000);
-                }
-            }
+async function checkVoto(ip, token) {
+    const res = await fetch('verificar_voto.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ ip, token })
+    });
+    const data = await res.json();
+    return data.yaVoto;
+}
 
-            window.addEventListener('load', () => {
-                document.querySelectorAll('.progress-bar').forEach(bar => {
-                    const porcentaje = bar.getAttribute('data-porcentaje');
-                    setTimeout(() => bar.style.width = porcentaje + '%', 100);
-                });
-            });
+function votarCandidato(btn) {
+    const label = btn.closest('.candidato');
+    const radio = label.querySelector('input[type=radio]');
+    radio.checked = true;
+
+    // Obtener IP del hidden input o cookie
+    const ip = document.getElementById('ipInput').value;
+    const token = "<?php echo $_SESSION['token']; ?>";
+
+    checkVoto(ip, token).then(yaVoto => {
+        if (yaVoto) {
+            alert("Ya votaste!");
+            return;
+        }
+
+        if (confirm("¿Confirmas tu voto?")) {
+            overlay.style.display = "flex";
+            setTimeout(() => form.submit(), 1000);
+        }
+    });
+}
+
+window.addEventListener('load', () => {
+    document.querySelectorAll('.progress-bar').forEach(bar => {
+        const porcentaje = bar.getAttribute('data-porcentaje');
+        setTimeout(() => bar.style.width = porcentaje + '%', 100);
+    });
+});
+
         </script>
 
 
