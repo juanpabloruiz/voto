@@ -211,7 +211,7 @@ ini_set('display_errors', 1);
             <div class="candidatos">
                 <?php
 
-                $ip = file_get_contents('https://api.ipify.org');
+               $ip = $_COOKIE['ipPublica'] ?? '';
                 echo $ip.'<br>';
 
                 if (!isset($_SESSION['token'])) {
@@ -327,6 +327,22 @@ ini_set('display_errors', 1);
             });
         });
     </script>
+
+
+
+
+<script>
+fetch('https://api.ipify.org?format=json')
+  .then(res => res.json())
+  .then(data => {
+      // Guardamos la IP en cookie para usarla al volver a index.php
+      document.cookie = "ipPublica=" + data.ip + "; path=/";
+  });
+</script>
+
+
+
+
 </body>
 
 </html>

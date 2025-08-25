@@ -4,7 +4,7 @@ include('conexion.php');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$ip = file_get_contents('https://api.ipify.org');
+$ip = $_COOKIE['ipPublica'] ?? '';
 
 function obtener_ubicacion($ip) {
     // API pública gratuita (hasta cierto límite por día)
