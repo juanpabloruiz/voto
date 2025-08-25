@@ -5,9 +5,9 @@ $ip = file_get_contents('https://api.ipify.org');
 
 // función que devuelve bien la IP real
 //function cliente_ip() {
-    //if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
-   // if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-  //  return $_SERVER['REMOTE_ADDR'];
+//if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
+// if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+//  return $_SERVER['REMOTE_ADDR'];
 //}
 
 //$ip = cliente_ip();
@@ -254,7 +254,7 @@ while ($row = mysqli_fetch_assoc($queryResultados)) {
             <!-- Columna izquierda: Candidatos -->
             <div class="candidatos">
                 <?php
-                if ($campo && isset($campo['ip'], $campo['token'], $campo['estado']) && ($campo['ip'] == $ip || ($campo['token'] == $token && $campo['estado'] == 1))) {
+                if ($yaVoto) {
                     echo '<p>Gracias por tu voto!</p>';
                 } else {
                     echo '<p class="titulo">Elegí tu candidato a gobernador y mirá el ranking en vivo:</p>';
@@ -284,7 +284,7 @@ while ($row = mysqli_fetch_assoc($queryResultados)) {
                     echo '<div class="progress"><div class="progress-bar" data-porcentaje="' . $porcentaje . '"></div></div>';
                     echo '</div>';
                 }
-           
+
                 ?>
             </div>
         </div>
