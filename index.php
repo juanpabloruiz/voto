@@ -21,7 +21,7 @@ if (!isset($_SESSION['token'])) {
 $token = $_SESSION['token'];
 
 // Verificar si ya votó por IP o por navegador (token)
-$sql = "SELECT 1 FROM votos WHERE (ip = ? OR token = ?) AND estado = 1 LIMIT 1";
+$sql = "SELECT 1 FROM votos WHERE ip = ? OR token = ? LIMIT 1";
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("ss", $ip, $token);
 $stmt->execute();

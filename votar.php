@@ -35,15 +35,15 @@ $token = $_SESSION['token'];
 $candidato = $_POST['candidato'] ?? '';
 
 // Insertar solo si no votó antes
-$sql = "SELECT 1 FROM votos WHERE (ip = ? OR token = ?) AND estado = 1 LIMIT 1";
+$sql = "SELECT 1 FROM votos WHERE ip = ? OR token = ? LIMIT 1";
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("ss", $ip, $token);
 $stmt->execute();
 $yaVoto = $stmt->get_result()->num_rows > 0;
 
 if (!$yaVoto && $candidato) {
-    $stmt = $conexion->prepare("INSERT INTO votos (candidato, ip, ubicacion, token, estado, ingreso) VALUES (?, ?, ?, ?, 1, NOW())");
-    $stmt->bind_param("ssss", $candidato, $ip, $ubicacion, $token);
+    $stmt = $conexion->prepare("INSERT INTO votos (candidato, ip, ubicacion, token, creado) VALUES (?, ?, ?, ?, NOW())");
+    $stmt->bind_param("sss", $candidato, $ip, $token);
     $stmt->execute();
 }
 
