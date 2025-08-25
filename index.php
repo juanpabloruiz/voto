@@ -308,44 +308,44 @@ ini_set('display_errors', 1);
 const form = document.getElementById('formVoto');
 const overlay = document.getElementById('overlay');
 
-async function checkVoto(ip, token) {
-    const res = await fetch('verificar_voto.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ ip, token })
-    });
-    const data = await res.json();
-    return data.yaVoto;
-}
-
-function votarCandidato(btn) {
+async function votarCandidato(btn) {
     const label = btn.closest('.candidato');
     const radio = label.querySelector('input[type=radio]');
     radio.checked = true;
 
-    // Obtener IP del hidden input o cookie
+    // Tomamos IP del input hidden y token de PHP
     const ip = document.getElementById('ipInput').value;
     const token = "<?php echo $_SESSION['token']; ?>";
 
-    checkVoto(ip, token).then(yaVoto => {
-        if (yaVoto) {
-            alert("Ya votaste!");
+    try {
+        const res = await fetch('verificar_voto.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ ip, token })
+        });
+
+        const data = await res.json();
+
+        if (data.yaVoto) {
+            overlay.style.display = 'flex';
+            overlay.innerHTML = '<p>Ya votaste!</p>';
+            setTimeout(() => overlay.style.display = 'none', 2000);
             return;
         }
 
+        // Si no votó, confirmar
         if (confirm("¿Confirmas tu voto?")) {
             overlay.style.display = "flex";
+            overlay.innerHTML = '<div class="loader"></div><p>Votando...</p>';
             setTimeout(() => form.submit(), 1000);
         }
-    });
+
+    } catch(err) {
+        console.error(err);
+        alert("Error al verificar tu voto");
+    }
 }
 
-window.addEventListener('load', () => {
-    document.querySelectorAll('.progress-bar').forEach(bar => {
-        const porcentaje = bar.getAttribute('data-porcentaje');
-        setTimeout(() => bar.style.width = porcentaje + '%', 100);
-    });
-});
 
         </script>
 
