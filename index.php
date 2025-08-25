@@ -2,7 +2,6 @@
 include('conexion.php');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-$ip = file_get_contents('https://api.ipify.org');
 
 // función que devuelve bien la IP real
 //function cliente_ip() {
@@ -16,57 +15,13 @@ $ip = file_get_contents('https://api.ipify.org');
 
 
 
-if (!isset($_SESSION['token'])) {
-    $_SESSION['token'] = bin2hex(random_bytes(32));
-}
-$token = $_SESSION['token'];
-echo $token;
-
-// Verificar si ya votó por IP o por navegador (token)
-$sql = "SELECT 1 FROM votos WHERE ip = ? OR token = ? LIMIT 1";
-$stmt = $conexion->prepare($sql);
-$stmt->bind_param("ss", $ip, $token);
-$stmt->execute();
-$yaVoto = $stmt->get_result()->num_rows > 0;
 
 
 
-// Lista de candidatos con imágenes
-$candidatos = [
-    "Pablo Valdés" => "img/valdes.jpg",
-    "Ricardo Colombi" => "img/colombi.jpg",
-    "Ezequiel Romero" => "img/romero.jpg",
-    "Martín Ascúa" => "img/ascua.jpg",
-    "Lisandro Almirón" => "img/almiron.jpg",
-    "Sonia López" => "img/lopez.jpg",
-    "Adriana Vega" => "img/vega.jpg"
-];
 
-// Total de votos válidos
-$queryTotal = mysqli_query($conexion, "SELECT COUNT(*) AS total FROM votos");
-$rowTotal = mysqli_fetch_assoc($queryTotal);
-$totalVotos = $rowTotal['total'];
 
-// Inicializar array de resultados con 0
-$resultados = [];
-foreach (array_keys($candidatos) as $candidato) {
-    $resultados[$candidato] = 0;
-}
 
-// Traer votos por candidato desde DB
-$queryResultados = mysqli_query($conexion, "
-    SELECT candidato, COUNT(*) AS cantidad 
-    FROM votos 
-    GROUP BY candidato
-");
 
-while ($row = mysqli_fetch_assoc($queryResultados)) {
-    $nombre = $row['candidato'];
-    $cantidad = $row['cantidad'];
-    if (isset($resultados[$nombre])) {
-        $resultados[$nombre] = $cantidad;
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -255,6 +210,60 @@ while ($row = mysqli_fetch_assoc($queryResultados)) {
             <!-- Columna izquierda: Candidatos -->
             <div class="candidatos">
                 <?php
+
+                $ip = file_get_contents('https://api.ipify.org');
+                echo $ip.'<br>';
+
+                if (!isset($_SESSION['token'])) {
+                    $_SESSION['token'] = bin2hex(random_bytes(32));
+                }
+                $token = $_SESSION['token'];
+                echo $token;
+
+                // Lista de candidatos con imágenes
+                $candidatos = [
+                    "Pablo Valdés" => "img/valdes.jpg",
+                    "Ricardo Colombi" => "img/colombi.jpg",
+                    "Ezequiel Romero" => "img/romero.jpg",
+                    "Martín Ascúa" => "img/ascua.jpg",
+                    "Lisandro Almirón" => "img/almiron.jpg",
+                    "Sonia López" => "img/lopez.jpg",
+                    "Adriana Vega" => "img/vega.jpg"
+                ];
+
+                // Total de votos válidos
+                $queryTotal = mysqli_query($conexion, "SELECT COUNT(*) AS total FROM votos");
+                $rowTotal = mysqli_fetch_assoc($queryTotal);
+                $totalVotos = $rowTotal['total'];
+
+                // Inicializar array de resultados con 0
+                $resultados = [];
+                foreach (array_keys($candidatos) as $candidato) {
+                    $resultados[$candidato] = 0;
+                }
+
+                // Traer votos por candidato desde DB
+                $queryResultados = mysqli_query($conexion, "
+                    SELECT candidato, COUNT(*) AS cantidad 
+                    FROM votos 
+                    GROUP BY candidato
+                ");
+
+                while ($row = mysqli_fetch_assoc($queryResultados)) {
+                    $nombre = $row['candidato'];
+                    $cantidad = $row['cantidad'];
+                    if (isset($resultados[$nombre])) {
+                        $resultados[$nombre] = $cantidad;
+                    }
+                }
+
+                // Verificar si ya votó por IP o por navegador (token)
+                $sql = "SELECT 1 FROM votos WHERE ip = ? OR token = ? LIMIT 1";
+                $stmt = $conexion->prepare($sql);
+                $stmt->bind_param("ss", $ip, $token);
+                $stmt->execute();
+                $yaVoto = $stmt->get_result()->num_rows > 0;
+
                 if ($yaVoto) {
                     echo '<p>Gracias por tu voto!</p>';
                 } else {
