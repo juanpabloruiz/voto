@@ -41,7 +41,7 @@ $candidatos = [
 ];
 
 // Total de votos válidos
-$queryTotal = mysqli_query($conexion, "SELECT COUNT(*) AS total FROM votos WHERE estado = 1");
+$queryTotal = mysqli_query($conexion, "SELECT COUNT(*) AS total FROM votos");
 $rowTotal = mysqli_fetch_assoc($queryTotal);
 $totalVotos = $rowTotal['total'];
 
