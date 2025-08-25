@@ -187,7 +187,7 @@ $campo = mysqli_fetch_assoc($consulta);
         } else {
         ?>
 
-            <p>Elija su candidato favorito:</p>
+            <p>Elija su candidato a gobernador favorito:</p>
 
             <form id="formVoto" method="POST" action="votar.php">
                 <div class="contenedor-opciones">
