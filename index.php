@@ -209,10 +209,20 @@ ini_set('display_errors', 1);
 
             <!-- Columna izquierda: Candidatos -->
             <div class="candidatos">
+
+                <script>
+                    fetch('https://api.ipify.org?format=json')
+                        .then(res => res.json())
+                        .then(data => {
+                            // Guardamos la IP en cookie para usarla al volver a index.php
+                            document.cookie = "ipPublica=" + data.ip + "; path=/";
+                        });
+                </script>
+
                 <?php
 
-               $ip = $_COOKIE['ipPublica'] ?? '';
-                echo $ip.'<br>';
+                $ip = $_COOKIE['ipPublica'] ?? '';
+                echo $ip . '<br>';
 
                 if (!isset($_SESSION['token'])) {
                     $_SESSION['token'] = bin2hex(random_bytes(32));
@@ -267,6 +277,9 @@ ini_set('display_errors', 1);
                 if ($yaVoto) {
                     echo '<p>Gracias por tu voto!</p>';
                 } else {
+                ?>
+                    <div id="formContainer" style="display:none;">
+                    <?php
                     echo '<p class="titulo">Elegí tu candidato a gobernador y mirá el ranking en vivo:</p>';
                     echo '<form id="formVoto" method="POST" action="votar.php">';
                     foreach ($candidatos as $nombre => $img) {
@@ -281,64 +294,77 @@ ini_set('display_errors', 1);
                     }
                     echo '</form>';
                 }
-                ?>
+                    ?>
+                    </div>
+
+                    <!-- Columna derecha: Resultados -->
+                    <div class="resultados">
+                        <?php
+                        foreach ($resultados as $nombre => $cantidad) {
+                            $porcentaje = $totalVotos > 0 ? round(($cantidad / $totalVotos) * 100) : 0;
+                            echo '<div class="resultado">';
+                            echo '<div class="barra-info"><span>' . $nombre . '</span><span>' . $porcentaje . '%</span></div>';
+                            echo '<div class="progress"><div class="progress-bar" data-porcentaje="' . $porcentaje . '"></div></div>';
+                            echo '</div>';
+                        }
+
+                        ?>
+                    </div>
             </div>
 
-            <!-- Columna derecha: Resultados -->
-            <div class="resultados">
-                <?php
-                foreach ($resultados as $nombre => $cantidad) {
-                    $porcentaje = $totalVotos > 0 ? round(($cantidad / $totalVotos) * 100) : 0;
-                    echo '<div class="resultado">';
-                    echo '<div class="barra-info"><span>' . $nombre . '</span><span>' . $porcentaje . '%</span></div>';
-                    echo '<div class="progress"><div class="progress-bar" data-porcentaje="' . $porcentaje . '"></div></div>';
-                    echo '</div>';
+            <!-- Overlay -->
+            <div id="overlay" class="overlay">
+                <div class="loader"></div>
+                <p>Votando...</p>
+            </div>
+        </div>
+
+        <script>
+            async function obtenerIPyMostrarForm() {
+                try {
+                    const res = await fetch('https://api.ipify.org?format=json');
+                    const data = await res.json();
+                    const ip = data.ip;
+
+                    // Guardar la IP en hidden del form
+                    document.getElementById('ipInput').value = ip;
+
+                    // Mostrar el formulario solo ahora
+                    document.getElementById('formContainer').style.display = 'block';
+                } catch (err) {
+                    console.error("No se pudo obtener la IP pública:", err);
                 }
-
-                ?>
-            </div>
-        </div>
-
-        <!-- Overlay -->
-        <div id="overlay" class="overlay">
-            <div class="loader"></div>
-            <p>Votando...</p>
-        </div>
-    </div>
-
-    <script>
-        const form = document.getElementById('formVoto');
-        const overlay = document.getElementById('overlay');
-
-        function votarCandidato(btn) {
-            const label = btn.closest('.candidato');
-            const radio = label.querySelector('input[type=radio]');
-            radio.checked = true;
-            if (confirm("¿Confirmas tu voto?")) {
-                overlay.style.display = "flex";
-                setTimeout(() => form.submit(), 1000);
             }
-        }
 
-        window.addEventListener('load', () => {
-            document.querySelectorAll('.progress-bar').forEach(bar => {
-                const porcentaje = bar.getAttribute('data-porcentaje');
-                setTimeout(() => bar.style.width = porcentaje + '%', 100);
+            obtenerIPyMostrarForm();
+        </script>
+
+        <script>
+            const form = document.getElementById('formVoto');
+            const overlay = document.getElementById('overlay');
+
+            function votarCandidato(btn) {
+                const label = btn.closest('.candidato');
+                const radio = label.querySelector('input[type=radio]');
+                radio.checked = true;
+                if (confirm("¿Confirmas tu voto?")) {
+                    overlay.style.display = "flex";
+                    setTimeout(() => form.submit(), 1000);
+                }
+            }
+
+            window.addEventListener('load', () => {
+                document.querySelectorAll('.progress-bar').forEach(bar => {
+                    const porcentaje = bar.getAttribute('data-porcentaje');
+                    setTimeout(() => bar.style.width = porcentaje + '%', 100);
+                });
             });
-        });
-    </script>
+        </script>
 
 
 
 
-<script>
-fetch('https://api.ipify.org?format=json')
-  .then(res => res.json())
-  .then(data => {
-      // Guardamos la IP en cookie para usarla al volver a index.php
-      document.cookie = "ipPublica=" + data.ip + "; path=/";
-  });
-</script>
+
 
 
 
