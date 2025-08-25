@@ -46,7 +46,7 @@ $stmt->execute();
 $yaVoto = $stmt->get_result()->num_rows > 0;
 
 if (!$yaVoto && $candidato) {
-    $stmt = $conexion->prepare("INSERT INTO votos (candidato, ip, ubicacion, token, estado, creado) VALUES (?, ?, ?, ?, 1, NOW())");
+    $stmt = $conexion->prepare("INSERT INTO votos (candidato, ip, ubicacion, token, estado, ingreso) VALUES (?, ?, ?, ?, 1, NOW())");
     $stmt->bind_param("ssss", $candidato, $ip, $ubicacion, $token);
     $stmt->execute();
 }
