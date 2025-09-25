@@ -57,14 +57,11 @@ header img {height:55px;display:block;}
 .grid {display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
 .candidatos,.resultados {background:#fff;padding:1rem;border-radius:1rem;box-shadow:0 0 6px rgba(0,0,0,.05);}
 @media (max-width:768px){.grid{grid-template-columns:1fr;}}
-.candidato {background:#f8f9fa;padding:.6rem .8rem;border-radius:.75rem;margin-bottom:.6rem;transition:background .2s;}
+.candidato {display:flex;align-items:center;justify-content:space-between;background:#f8f9fa;padding:.6rem .8rem;border-radius:.75rem;margin-bottom:.6rem;transition:background .2s;}
 .candidato:hover {background:#eef3ff;}
-.candidato-header {display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
 .candidato-info {display:flex;align-items:center;gap:.6rem;}
 .candidato img {width:40px;height:40px;border-radius:50%;object-fit:cover;}
 .candidato .nombre {font-weight:600;}
-.expand-btn {background:none;border:none;cursor:pointer;font-size:1.2rem;}
-.candidato-extra {display:none;margin-top:.6rem;text-align:right;}
 .btn-votar {background:#007bff;color:#fff;border:none;padding:.4rem .8rem;border-radius:.5rem;cursor:pointer;font-weight:600;}
 .btn-votar:hover {background:#0056b3;}
 .resultado {margin-bottom:.8rem;}
@@ -90,22 +87,15 @@ header img {height:55px;display:block;}
 <p class="titulo">Elegí tu candidato a gobernador y mirá el ranking en vivo:</p>
 <form id="formVoto" method="POST" action="votar.php">
 <?php
-$id = 0;
 foreach ($candidatos as $nombre => $img) {
-    $id++;
-    echo '<div class="candidato" id="candidato'.$id.'">';
-    echo '<div class="candidato-header" onclick="toggleExtra('.$id.')">';
+    echo '<label class="candidato">';
     echo '<div class="candidato-info">';
     echo '<img src="' . $img . '" alt="' . $nombre . '">';
     echo '<span class="nombre">' . $nombre . '</span>';
     echo '</div>';
-    echo '<button type="button" class="expand-btn" id="btn'.$id.'">▼</button>';
-    echo '</div>';
-    echo '<div class="candidato-extra">';
     echo '<input type="radio" name="candidato" value="' . $nombre . '" hidden>';
     echo '<button type="button" class="btn-votar" onclick="votarCandidato(this)">Votar</button>';
-    echo '</div>';
-    echo '</div>';
+    echo '</label>';
 }
 ?>
 </form>
@@ -145,36 +135,13 @@ fetch('https://api.ipify.org?format=json')
 })
 .catch(err=>console.error('No se pudo obtener la IP:',err));
 
-// Expandir/colapsar solo un candidato
-function toggleExtra(id){
-    // Cerrar todos
-    document.querySelectorAll('.candidato-extra').forEach(extra=>{
-        extra.style.display='none';
-    });
-    document.querySelectorAll('.expand-btn').forEach(btn=>{
-        btn.textContent='▼';
-    });
-
-    // Abrir el seleccionado
-    const extra=document.querySelector('#candidato'+id+' .candidato-extra');
-    const btn=document.getElementById('btn'+id);
-
-    if(extra.style.display==='block'){
-        extra.style.display='none';
-        btn.textContent='▼';
-    } else {
-        extra.style.display='block';
-        btn.textContent='▲';
-    }
-}
-
 // Votar candidato
 const form=document.getElementById('formVoto');
 const overlay=document.getElementById('overlay');
 
 async function votarCandidato(btn){
-    const candidatoDiv=btn.closest('.candidato');
-    const radio=candidatoDiv.querySelector('input[type=radio]');
+    const label=btn.closest('.candidato');
+    const radio=label.querySelector('input[type=radio]');
     radio.checked=true;
 
     const ip=document.getElementById('ipInput').value;
