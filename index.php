@@ -81,11 +81,12 @@ header img {height:55px;display:block;}
 
 <!-- Candidatos -->
 <div class="candidatos">
-<input type="hidden" id="ipInput" name="ip">
 
 <div id="formContainer" style="display:none;">
 <p class="titulo">Elegí tu candidato a gobernador y mirá el ranking en vivo:</p>
 <form id="formVoto" method="POST" action="votar.php">
+<input type="hidden" id="ipInput" name="ip">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php
 foreach ($candidatos as $nombre => $img) {
     echo '<label class="candidato">';

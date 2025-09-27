@@ -1,10 +1,11 @@
 <?php
+session_start();
 include('conexion.php');
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$ip = $_COOKIE['ipPublica'] ?? '';
+$ip = $_POST['ip'] ?? '';
 
 function obtener_ubicacion($ip) {
     // API pública gratuita (hasta cierto límite por día)
@@ -33,6 +34,11 @@ $ubicacion = $pais.'/'.$region.'/'.$ciudad;
 
 $token = $_SESSION['token'];
 $candidato = $_POST['candidato'] ?? '';
+$form_token = $_POST['token'] ?? '';
+
+if (!hash_equals($_SESSION['token'], $form_token)) {
+    die('Error de validación de token.');
+}
 
 // Insertar solo si no votó antes
 $sql = "SELECT 1 FROM votos WHERE ip = ? OR token = ? LIMIT 1";
